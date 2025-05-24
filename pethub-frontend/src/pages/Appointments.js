@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 function Appointments() {
+  // Estados para la lista y el UI
   const [appointments, setAppointments] = useState([]);
-  const [pets, setPets] = useState([]); // Necesitamos las mascotas para el selector en el formulario de cita
+  const [pets, setPets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [editingAppointment, setEditingAppointment] = useState(null);
-  const { token, user } = useAuth(); // Obtén el token y el usuario (para rol)
 
   // Estados para el formulario de creación/edición de cita
   const [selectedPetId, setSelectedPetId] = useState('');
@@ -16,8 +17,11 @@ function Appointments() {
   const [time, setTime] = useState('');
   const [description, setDescription] = useState('');
 
-  // Función para obtener las mascotas del usuario (o todas si es admin)
-  // Esto es necesario para que el usuario pueda seleccionar una mascota al crear una cita
+  // Contexto de autenticación
+  const { token, user, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+
+  // Función para obtener las mascotas del usuario (o todas si es admin) para el selector
   const fetchPetsForSelection = async () => {
     try {
       const response = await api.get('/pets', {
@@ -32,7 +36,6 @@ function Appointments() {
 
   // Función para obtener las citas
   const fetchAppointments = async () => {
-    setLoading(true);
     setError(null);
     try {
       const response = await api.get('/appointments', {
@@ -43,20 +46,24 @@ function Appointments() {
       console.error('Error al cargar citas:', err);
       setError('Error al cargar las citas. Por favor, inténtalo de nuevo.');
     } finally {
-      setLoading(false);
+      // El setLoading(false) general se hace en el useEffect
     }
   };
 
-  // Efecto para cargar datos al montar el componente
+  // Efecto para cargar datos al montar el componente y manejar redirección
   useEffect(() => {
-    if (token) {
-      fetchPetsForSelection(); // Carga las mascotas para el selector
-      fetchAppointments(); // Carga las citas
+    if (!isAuthenticated) {
+      navigate('/login');
+    } else if (token) {
+      fetchPetsForSelection();
+      fetchAppointments();
+      setLoading(false);
     } else {
       setLoading(false);
       setError('No estás autenticado para ver las citas.');
     }
-  }, [token]);
+  }, [isAuthenticated, token, navigate]);
+
 
   // Función para manejar el envío del formulario (crear o editar)
   const handleSubmit = async (e) => {
@@ -64,15 +71,12 @@ function Appointments() {
     setError(null);
     try {
       if (editingAppointment) {
-        // Lógica para editar cita existente (SOLO ADMIN)
-        // No permitimos cambiar petId al editar
         const response = await api.put(`/appointments/${editingAppointment.id}`, { date, time, description }, {
           headers: { Authorization: `Bearer ${token}` }
         });
         console.log('Cita actualizada:', response.data.appointment);
         setEditingAppointment(null);
       } else {
-        // Lógica para crear nueva cita
         if (!selectedPetId) {
             setError('Por favor, selecciona una mascota para la cita.');
             return;
@@ -82,12 +86,11 @@ function Appointments() {
         });
         console.log('Cita creada:', response.data.appointment);
       }
-      // Limpia el formulario y recarga las citas
       setSelectedPetId('');
       setDate('');
       setTime('');
       setDescription('');
-      fetchAppointments(); // Recarga la lista
+      fetchAppointments();
     } catch (err) {
       console.error('Error al guardar cita:', err.response?.data?.message || err.message);
       setError(`Error al guardar cita: ${err.response?.data?.message || 'Error desconocido'}`);
@@ -97,7 +100,7 @@ function Appointments() {
   // Función para iniciar el modo de edición
   const handleEditClick = (appointment) => {
     setEditingAppointment(appointment);
-    setSelectedPetId(appointment.petId); // Mantener el petId para visualización (no se edita)
+    setSelectedPetId(appointment.petId);
     setDate(appointment.date);
     setTime(appointment.time);
     setDescription(appointment.description || '');
@@ -121,7 +124,7 @@ function Appointments() {
           headers: { Authorization: `Bearer ${token}` }
         });
         console.log('Cita eliminada:', appointmentId);
-        fetchAppointments(); // Recarga la lista
+        fetchAppointments();
       } catch (err) {
         console.error('Error al eliminar cita:', err.response?.data?.message || err.message);
         setError(`Error al eliminar cita: ${err.response?.data?.message || 'Error desconocido'}`);
@@ -134,7 +137,11 @@ function Appointments() {
   }
 
   if (error) {
-    return <p style={{ color: 'red' }}>{error}</p>;
+    return <p className="error">{error}</p>;
+  }
+
+  if (!isAuthenticated && !loading) {
+    return null;
   }
 
   const isUserAdmin = user?.role === 'admin';
@@ -143,7 +150,6 @@ function Appointments() {
     <div>
       <h2>Gestionar Citas</h2>
 
-      {/* Formulario para Crear Cita (y Editar si es admin) */}
       <h3>{editingAppointment ? 'Editar Cita (Solo Admin)' : 'Programar Nueva Cita'}</h3>
       {editingAppointment && !isUserAdmin && (
           <p style={{color: 'orange'}}>Solo los administradores pueden editar citas.</p>
@@ -155,7 +161,7 @@ function Appointments() {
             value={selectedPetId}
             onChange={(e) => setSelectedPetId(e.target.value)}
             required
-            disabled={editingAppointment && !isUserAdmin} // Deshabilita la selección de mascota al editar (y si no es admin)
+            disabled={editingAppointment && !isUserAdmin}
           >
             <option value="">Selecciona una mascota</option>
             {pets.map((pet) => (
@@ -183,7 +189,6 @@ function Appointments() {
         {editingAppointment && <button type="button" onClick={handleCancelEdit}>Cancelar Edición</button>}
       </form>
 
-      {/* Lista de Citas */}
       <h3>Citas Programadas {isUserAdmin && '(todas las citas)'}</h3>
       {appointments.length === 0 ? (
         <p>No hay citas programadas aún.</p>
@@ -194,14 +199,13 @@ function Appointments() {
               Mascota: {app.pet?.name || 'Desconocida'} - Fecha: {app.date} Hora: {app.time}
               {app.description && ` - ${app.description}`}
               {isUserAdmin && ` - Dueño Mascota: ${app.pet?.owner?.username || 'Desconocido'}`}
-              {/* Botones de acción solo si es admin o si el usuario es dueño y no está en modo edición (para no mostrar editar/eliminar a user)*/}
-              {isUserAdmin && ( // Solo admin puede editar y eliminar
+              {isUserAdmin && (
                   <>
                     <button onClick={() => handleEditClick(app)}>Editar</button>
                     <button onClick={() => handleDelete(app.id)}>Eliminar</button>
                   </>
               )}
-              {!isUserAdmin && app.pet?.userId === user?.id && ( // Usuario normal solo puede ver sus citas
+              {!isUserAdmin && app.pet?.userId === user?.id && (
                   <span style={{marginLeft: '10px', color: 'gray'}}> (Solo admin puede editar/eliminar)</span>
               )}
             </li>

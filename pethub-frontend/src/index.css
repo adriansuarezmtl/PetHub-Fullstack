@@ -1,0 +1,405 @@
+/* Definición de la paleta de colores con variables CSS */
+:root {
+  --blue-dark: #2F4F4F;
+  --blue-medium: #4682B4;
+  --blue-light: #ADD8E6;
+  --gray-dark: #36454F;
+  --gray-medium: #708090;
+  --beige-light: #DCD0C0; /* Fondo principal */
+  --off-white: #FFFFFF;
+  --brown-dark: #6B4226;
+  --brown-medium: #8B4513;
+  --brown-light: #D2B48C;
+  --success-color: #5cb85c;
+  --danger-color: #d9534f;
+  --info-color: #5bc0de;
+}
+
+/* Reseteos y estilos generales */
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--beige-light); /* Fondo suave */
+  color: var(--gray-dark);
+  line-height: 1.6;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.App {
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 0px;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Estilos generales para títulos de páginas */
+h2 {
+  color: var(--blue-medium);
+  text-align: center;
+  margin-top: 30px;
+  margin-bottom: 20px;
+  font-size: 2em;
+}
+
+h3 {
+  color: var(--brown-dark);
+  margin-top: 25px;
+  margin-bottom: 15px;
+  font-size: 1.5em;
+}
+
+/* Estilos básicos de formularios y botones (SE MANTIENEN LOS YA EXISTENTES) */
+/* Estilos básicos de formularios y botones */
+form {
+  background-color: var(--off-white);
+  padding: 30px; /* Aumentamos el padding */
+  border-radius: 12px; /* Bordes más redondeados */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1); /* Sombra más pronunciada */
+  margin-bottom: 30px;
+  max-width: 400px; /* Reducimos el ancho máximo para un look más centrado */
+  margin-left: auto;
+  margin-right: auto;
+}
+
+form div {
+  margin-bottom: 20px; /* Más espacio entre los campos */
+}
+
+form label {
+  display: block;
+  margin-bottom: 10px; /* Más espacio debajo de la etiqueta */
+  font-weight: bold;
+  color: var(--gray-dark); /* Usamos un gris más oscuro */
+}
+
+form input,
+form input::placeholder,
+form input:-ms-input-placeholder,
+form textarea,
+form select {
+  width: calc(100% - 20px);
+  padding: 12px; /* Aumentamos el padding de los inputs */
+  border: 1px solid var(--gray-medium); /* Borde gris más sutil */
+  border-radius: 8px; /* Bordes más redondeados en los inputs */
+  font-size: 1rem;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease; /* Transición suave para el foco */
+}
+
+form input:focus,
+form textarea:focus,
+form select:focus {
+  border-color: var(--blue-medium); /* Resaltar el borde al enfocar */
+  outline: none; /* Eliminar el outline predeterminado del navegador */
+}
+
+form textarea {
+    resize: vertical;
+    min-height: 100px; /* Un poco más de altura por defecto */
+}
+
+form button {
+  background-color: var(--blue-medium); /* Cambiamos el color del botón principal */
+  color: var(--off-white);
+  padding: 14px 24px; /* Aumentamos el padding del botón */
+  border: none;
+  border-radius: 8px; /* Bordes más redondeados en el botón */
+  cursor: pointer;
+  font-size: 1.1rem;
+  font-weight: bold; /* Texto del botón en negrita */
+  transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Transiciones para hover y sombra */
+  margin-right: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra suave en el botón */
+}
+
+form button:hover {
+  background-color: var(--blue-dark); /* Tono más oscuro al pasar el ratón */
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15); /* Sombra más pronunciada al hacer hover */
+}
+
+form button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+form button.secondary { /* Un estilo secundario para botones dentro del formulario si lo necesitas */
+  background-color: var(--gray-medium);
+}
+
+form button.secondary:hover {
+  background-color: var(--gray-dark);
+}
+
+/* Estilos específicos de la página de inicio (Home.js) */
+.home-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+}
+
+/* Estilos para HeroSection (usado en Home) */
+.hero-section {
+  position: relative;
+  width: 100%;
+  height: 400px;
+  overflow: hidden;
+  margin-bottom: 40px;
+}
+
+.hero-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.6);
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  padding: 20px;
+  z-index: 1;
+}
+
+.hero-overlay h1 {
+  font-size: 3.5em;
+  margin-bottom: 10px;
+  color: white;
+}
+
+.hero-overlay p {
+  font-size: 1.3em;
+  margin-bottom: 30px;
+  max-width: 700px;
+}
+
+.hero-buttons {
+  display: flex;
+  gap: 20px;
+}
+
+.hero-button {
+  background-color: var(--brown-medium);
+  color: var(--off-white);
+  padding: 15px 30px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 1.2em;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.hero-button:hover {
+  background-color: var(--brown-dark);
+}
+
+.hero-button.secondary {
+  background-color: var(--blue-medium);
+  color: var(--off-white);
+}
+
+.hero-button.secondary:hover {
+  background-color: var(--blue-dark);
+}
+
+/* Estilos de las características (solo para Home.js) */
+.features-section {
+  width: 100%;
+  padding: 40px 20px;
+  background-color: var(--off-white);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+  margin-bottom: 40px;
+  max-width: 1200px;
+  box-sizing: border-box;
+}
+
+.features-section h2 {
+  margin-bottom: 40px;
+  color: var(--blue-medium);
+}
+
+.feature-cards {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 30px;
+}
+
+.card {
+  background-color: var(--off-white);
+  border: 1px solid var(--blue-light);
+  border-radius: 8px;
+  padding: 25px;
+  width: 280px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+.card h3 {
+  color: var(--brown-dark);
+  margin-top: 0;
+  font-size: 1.3em;
+}
+
+.card p {
+  font-size: 0.95em;
+  color: var(--gray-medium);
+  text-align: center;
+}
+
+/* Estilos para el AppHeader (navegación que aparece solo cuando autenticado) */
+.app-header-nav {
+    background-color: var(--blue-dark);
+    padding: 10px 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 100%;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.app-header-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    flex-wrap: wrap;
+}
+
+.app-header-nav ul li {
+    margin: 0 15px;
+}
+
+.app-header-nav ul li a,
+.app-header-nav .logout-button {
+    color: var(--off-white);
+    text-decoration: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    font-weight: bold;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.app-header-nav ul li a:hover,
+.app-header-nav .logout-button:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+.logout-button {
+    background-color: var(--brown-dark);
+    padding: 10px 15px;
+    border-radius: 8px;
+}
+.logout-button:hover {
+    background-color: var(--brown-medium);
+}
+
+
+/* --- NUEVOS ESTILOS PARA LAS PÁGINAS DE REGISTRO/LOGIN SIN HERO SECTION --- */
+.auth-form-page { /* Contenedor principal de Register.js y Login.js */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center; /* Centra el formulario verticalmente */
+    min-height: 100vh; /* Ocupa toda la altura del viewport */
+    background-color: var(--beige-light); /* Mismo fondo que el body */
+    padding: 20px; /* Padding general */
+    box-sizing: border-box; /* Incluye padding en el tamaño */
+}
+
+.auth-form-page form { /* El formulario en sí */
+    margin-bottom: 20px; /* Margen debajo del formulario */
+    /* max-width, padding, etc. ya definidos en la regla 'form' general */
+}
+
+.auth-form-page h2 {
+    margin-top: 0;
+    margin-bottom: 25px;
+    color: var(--blue-medium);
+}
+
+.auth-links { /* Contenedor de los botones de navegación debajo del formulario */
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+    justify-content: center;
+    flex-wrap: wrap; /* Para responsividad */
+}
+
+.auth-link-button {
+    background-color: var(--brown-medium);
+    color: var(--off-white);
+    padding: 10px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 1em;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.auth-link-button:hover {
+    background-color: var(--brown-dark);
+}
+
+.auth-link-button.secondary {
+    background-color: var(--blue-medium);
+    color: var(--off-white);
+}
+
+.auth-link-button.secondary:hover {
+    background-color: var(--blue-dark);
+}
+
+/* Responsive adjustments for auth-form-page */
+@media (max-width: 480px) {
+    .auth-form-page form {
+        width: 100%;
+        padding: 15px;
+    }
+    .auth-links {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+    }
+    .auth-link-button {
+        width: 80%; /* Hacer los botones más anchos en móviles */
+    }
+}

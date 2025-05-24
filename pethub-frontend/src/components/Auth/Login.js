@@ -1,36 +1,37 @@
-import React, { useState } from 'react';
-import { useAuth } from '../../context/AuthContext'; // Importa el hook del contexto de auth
-import { useNavigate } from 'react-router-dom'; // Para redireccionar
+import React, { useState, useEffect } from 'react';
+import { useAuth } from '../../context/AuthContext';
+import { useNavigate, Link } from 'react-router-dom'; // Importa Link
 
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [message, setMessage] = useState(''); // Para mostrar mensajes
-  const { login, isAuthenticated, loading } = useAuth(); // Accede a la función login y estados del contexto
+  const [message, setMessage] = useState('');
+  const { login, isAuthenticated, loading } = useAuth();
   const navigate = useNavigate();
 
-  // Si el usuario ya está autenticado, redirigirlo a la página de inicio
-  // useEffect(() => {
-  //   if (isAuthenticated) {
-  //     navigate('/');
-  //   }
-  // }, [isAuthenticated, navigate]);
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/'); // Redirige a la página de inicio si ya está autenticado
+    }
+  }, [isAuthenticated, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage('');
 
-    // Llamamos a la función login del contexto
     const result = await login(email, password);
 
-    if (!result.success) { // Si el login falló
+    if (!result.success) {
       setMessage(`Error: ${result.message}`);
     }
-    // Si el login fue exitoso, el contexto ya maneja la redirección (en AuthContext.js)
   };
 
+  if (isAuthenticated) {
+    return <p>Ya has iniciado sesión. Redirigiendo...</p>;
+  }
+
   return (
-    <div>
+    <div className="auth-form-page"> {/* Nuevo contenedor para estas páginas */}
       <h2>Iniciar Sesión</h2>
       <form onSubmit={handleSubmit}>
         <div>
@@ -55,7 +56,13 @@ function Login() {
           {loading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
         </button>
       </form>
-      {message && <p>{message}</p>}
+      {message && <p className={message.startsWith('Error:') ? 'error' : 'message'}>{message}</p>}
+
+      {/* Nuevo enlace para regresar a la página de inicio o registro */}
+      <div className="auth-links">
+        <Link to="/" className="auth-link-button">Página de Inicio</Link>
+        <Link to="/register" className="auth-link-button secondary">Registrarse</Link>
+      </div>
     </div>
   );
 }

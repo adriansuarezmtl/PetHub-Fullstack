@@ -1,21 +1,20 @@
 import React, { useState } from 'react';
-import { useAuth } from '../../context/AuthContext'; // Importa el hook del contexto de auth
-import { useNavigate } from 'react-router-dom'; // Para redireccionar
+import { useAuth } from '../../context/AuthContext';
+import { useNavigate, Link } from 'react-router-dom'; // Importa Link
 
 function Register() {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState('user'); // Por defecto, el rol es 'user'
-  const [message, setMessage] = useState(''); // Para mostrar mensajes al usuario
-  const { register, loading } = useAuth(); // Accede a la función register y al estado loading del contexto
+  const [role] = useState('user');
+  const [message, setMessage] = useState('');
+  const { register, loading } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); // Previene el comportamiento por defecto del formulario
-    setMessage(''); // Limpia mensajes anteriores
+    e.preventDefault();
+    setMessage('');
 
-    // Llamamos a la función register del contexto
     const result = await register(username, email, password, role);
 
     if (result.success) {
@@ -23,15 +22,14 @@ function Register() {
       setUsername('');
       setEmail('');
       setPassword('');
-      setRole('user');
-      navigate('/login'); // Redirige al login después de un registro exitoso
+      // navigate('/login'); // Ya no necesitamos la redirección automática aquí
     } else {
       setMessage(`Error: ${result.message}`);
     }
   };
 
   return (
-    <div>
+    <div className="auth-form-page"> {/* Nuevo contenedor para estas páginas */}
       <h2>Registrarse</h2>
       <form onSubmit={handleSubmit}>
         <div>
@@ -61,21 +59,17 @@ function Register() {
             required
           />
         </div>
-        {/* Opcional: Permitir seleccionar el rol, aunque por defecto es 'user' */}
-        {/*
-        <div>
-          <label>Rol:</label>
-          <select value={role} onChange={(e) => setRole(e.target.value)}>
-            <option value="user">Usuario</option>
-            <option value="admin">Admin</option>
-          </select>
-        </div>
-        */}
         <button type="submit" disabled={loading}>
           {loading ? 'Registrando...' : 'Registrar'}
         </button>
       </form>
-      {message && <p>{message}</p>} {/* Muestra el mensaje si existe */}
+      {message && <p className={message.startsWith('Error:') ? 'error' : 'message'}>{message}</p>}
+
+      {/* Nuevo enlace para regresar a la página de inicio o login */}
+      <div className="auth-links">
+        <Link to="/" className="auth-link-button">Página de Inicio</Link>
+        <Link to="/login" className="auth-link-button secondary">Iniciar Sesión</Link>
+      </div>
     </div>
   );
 }
