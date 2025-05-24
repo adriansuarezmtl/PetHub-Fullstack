@@ -84,7 +84,7 @@ Para poner en marcha la aplicación en tu máquina local, sigue estos pasos:
         ```
     c.  **Configurar variables de entorno:**
         * Crea un archivo llamado `.env` en la raíz de la carpeta `pethub-backend`.
-        * Copia el contenido del archivo `env.example` (si lo creaste) o pega lo siguiente, **reemplazando los valores placeholders** con tus credenciales de PostgreSQL:
+        * Copia el contenido y pega lo siguiente, **reemplazando los valores placeholders** con tus credenciales de PostgreSQL:
             ```env
             PORT=5000
             DB_USER=tu_usuario_postgres
